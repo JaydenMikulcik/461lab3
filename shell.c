@@ -47,7 +47,6 @@ int runPipes(char *args[], char *pipeArgs[]) {
 
         if (child_pid2 == 0) {
             // Child process 2
-            printf("Child Process 2 (PID: %d) executing 'grep'\n", getpid());
             dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin to the read end of the pipe
             close(pipe_fd[1]); // Close the write end of the pipe
             close(pipe_fd[0]); // Close the read end of the pipe
@@ -61,7 +60,6 @@ int runPipes(char *args[], char *pipeArgs[]) {
 
             // Wait for the second child to finish
             wait(NULL);
-            printf("Both child processes have completed.\n");
         }
     }
     close(pipe_fd[1]); // Close the write end of the pipe
