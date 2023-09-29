@@ -103,8 +103,7 @@ int checkWorkingPath(char *command, char *args[]) {
         if(execve(args[0],args,NULL) != -1)
             {
                 if (path_copy != NULL) {
-                    printf("this os not workjing");
-                    //free(path_copy);
+                    free(path_copy);
                 }
                 return 1;
             }
@@ -114,8 +113,7 @@ int checkWorkingPath(char *command, char *args[]) {
     fprintf(stderr, "Error running command in execve\n");
 
     if (path_copy != NULL) {
-        printf("this os not workjing");
-        //free(path_copy);
+        free(path_copy);
     }
 
     return -100;

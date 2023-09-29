@@ -29,9 +29,8 @@ int runPipes(char *args[], char *pipeArgs[]) {
 
     if (child_pid1 == 0) {
         // Child process 1
-        printf("Child Process 1 (PID: %d) executing 'ls'\n", getpid());
-        close(pipe_fd[0]); // Close the read end of the pipe
         dup2(pipe_fd[1], STDOUT_FILENO); // Redirect stdout to the write end of the pipe
+        close(pipe_fd[0]); // Close the read end of the pipe
         close(pipe_fd[1]); // Close the write end of the pipe
         executeExecutable(args[0], args);
         perror("execlp");
@@ -49,8 +48,8 @@ int runPipes(char *args[], char *pipeArgs[]) {
         if (child_pid2 == 0) {
             // Child process 2
             printf("Child Process 2 (PID: %d) executing 'grep'\n", getpid());
-            close(pipe_fd[1]); // Close the write end of the pipe
             dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin to the read end of the pipe
+            close(pipe_fd[1]); // Close the write end of the pipe
             close(pipe_fd[0]); // Close the read end of the pipe
             executeExecutable(pipeArgs[0], pipeArgs);
             perror("execlp");
@@ -65,6 +64,10 @@ int runPipes(char *args[], char *pipeArgs[]) {
             printf("Both child processes have completed.\n");
         }
     }
+    close(pipe_fd[1]); // Close the write end of the pipe
+    close(pipe_fd[0]);
+    waitpid(child_pid1, NULL, 0);
+    waitpid(child_pid2, NULL, 0);
 
     return 0;
 }
